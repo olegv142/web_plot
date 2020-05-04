@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src='plotly-basic.min.js'></script>
+</head>
+
+<body>
+  <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script type="text/javascript">
+    Plotly.d3.json("/api/v1/data/1?interval=100", function (resp) {
+      var line = {
+        x: [],
+        y: [],
+        type: 'line'
+      };
+      var now = Date.now();
+      resp.data.forEach(function (xy) {
+        line.x.push(new Date(now + xy.x));
+        line.y.push(xy.y);
+      });
+      var data = [line];
+      const initial_range = 3600;
+      Plotly.react('myDiv', data, {
+        dragmode: 'pan', hovermode: false,
+        xaxis: {range: [new Date(now - initial_range), new Date(now)]},
+        yaxis: {fixedrange: true}
+      });
+    });
+  </script>
+</body>
+</html>
